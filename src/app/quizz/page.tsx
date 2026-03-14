@@ -37,7 +37,13 @@ export default function Home() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
   const handleNext = () => {
+    if(!started) {
     setStarted(true);
+    }
+
+    if(currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    }
   };
 
   return (
@@ -48,13 +54,18 @@ export default function Home() {
       :
        <div>
         <h2 className="text-3xl font-bold">
-          What is your level of understanding React
+          {questions[currentQuestion].questionText}
         </h2>
         <div className="grid grid-cols-1 gap-6 mt-6">
-          <Button variant={"secondary"}>Beginner</Button>
-          <Button variant={"secondary"}>Intermediate</Button>
-          <Button variant={"secondary"}>Advanced</Button>
-          <Button variant={"secondary"}>Expert</Button>
+          {
+            questions[currentQuestion].answers.map(answer => {
+              return (
+                <Button key={answer.id} variant={"secondary"} >
+                  {answer.answerText}
+                </Button>
+              )
+            })
+          }
         </div>
       </div>}
     </main>
