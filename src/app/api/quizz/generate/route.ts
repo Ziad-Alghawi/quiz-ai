@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ChatGoogle } from "@langchain/google/node";
 import { HumanMessage } from "@langchain/core/messages";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import saveQuizz from "./saveToDb";
 
 
 export async function POST(request: NextRequest) {
@@ -41,7 +42,9 @@ const cleaned = result.text
 const parsed = JSON.parse(cleaned);
 console.log(JSON.stringify(parsed, null, 2));
 
-    return NextResponse.json({ message: "created successfully" }, { status: 200 });
+const {quizzId} = await saveQuizz(parsed.quizz);
+
+    return NextResponse.json({ quizzId }, { status: 200 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

@@ -25,6 +25,7 @@
     "@tanstack/react-table": "^8.11.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv": "^17.3.1",
     "drizzle-orm": "^0.29.3",
     "framer-motion": "^10.18.0",
     "langchain": "^0.1.30",
