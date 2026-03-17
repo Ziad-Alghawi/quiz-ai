@@ -10,5 +10,6 @@ export default function Home() {
       <Button>Start</Button>
     </footer>
     </div>
+    
   )
 }
