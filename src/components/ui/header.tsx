@@ -2,6 +2,8 @@ import { auth, signOut, signIn } from "@/auth";
 import { Button } from "./button";
 import Image from "next/image";
 import Link from "next/link";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { NavMenu } from "../NavMenu";
 
 function SignOut() {
   return (
@@ -26,9 +28,14 @@ const Header = async () => {
           <div>
             {
               session?.user ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                   {
-                    session.user.name && session.user.image && (
+                    session.user.name && session.user.image && 
+
+                      <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost">
+
                       <Image
                         src={session.user.image}
                         alt={session.user.name}
@@ -36,7 +43,11 @@ const Header = async () => {
                         height={32}
                         className="rounded-full"
                       />
-                    )
+                      </Button>
+                      </DropdownMenuTrigger>
+                      <NavMenu />
+                      </DropdownMenu>
+                    
                   }
                   <SignOut />
                 </div>
