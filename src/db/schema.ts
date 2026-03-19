@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { relations } from "drizzle-orm";
+import { create } from "domain";
 
 /////////////////////////////////////////////////////////
 // Provider the authentication form here to be used in the accounts table
@@ -120,6 +121,7 @@ export const quizzSubmissions = pgTable("quizz_submissions", {
   id: serial("id").primaryKey(),
   quizzId: integer("quizz_id"),
   score: integer("score"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const quizzSubmissionsRelations = relations(quizzSubmissions, ({ one, many }) => ({

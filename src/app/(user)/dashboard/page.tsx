@@ -5,7 +5,8 @@ import { auth } from '@/auth';
 import QuizzesTable, { Quizz } from './quizzesTable';
 import getUserMatrics from '@/actions/getUserMatrics';
 import MetricCard from './metricCard';
-import { use } from 'react';
+import getHeatMapData from '@/actions/getHeatMapData';
+import SubmissionHeatMap from './heatMap';
 
 
 
@@ -22,7 +23,8 @@ const page = async () => {
     where: eq(quizzes.userId, userId)
   });
   const userData = await getUserMatrics();
-  console.log(userData);
+  const heatMapData = await getHeatMapData();
+  console.log(heatMapData);
 
   return (
     <div className="mt-4">
@@ -33,8 +35,12 @@ const page = async () => {
       }
       
       </> : null
-
       }
+      </div>
+      <div>
+        {
+          heatMapData ? <SubmissionHeatMap data={heatMapData.data} /> : <p>No data available</p>
+        }
       </div>
 
     <QuizzesTable quizzes={userQuizzes} />
