@@ -8,6 +8,8 @@ import QuizzSubmission from "./QuizzSubmission";
 import { InferSelectModel } from "drizzle-orm";
 import { questionAnswers, questions as Dbquestions, quizzes } from "@/db/schema";
 import { useRouter } from "next/navigation";
+import { saveSubmissions } from "../actions/saveSubmissions";
+import { set } from "zod";
 
 type Answer = InferSelectModel<typeof questionAnswers>;
 type Question = InferSelectModel<typeof Dbquestions> & {
@@ -42,6 +44,7 @@ export default function QuizzQuestions(props: props) {
       setSubmitted(true);
       return;
     }
+
   };
 
   const handleAnswer = (answer: Answer, questionId: number) => {
@@ -55,6 +58,15 @@ export default function QuizzQuestions(props: props) {
     if (isCurrentCorrect) {
       setScore(score + 1);
     }
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const subId = await saveSubmissions({ score }, props.quizz.id);
+    } catch (e) {
+      console.error("Error saving submission:", e);
+    }
+    setSubmitted(true);
   }
 
   const handlePressPrev = () => {
@@ -135,7 +147,15 @@ export default function QuizzQuestions(props: props) {
       <footer className="footer pb-9 px-6 relative mb-0 ">
         <ResultCard isCorrect={isCorrect}
           correctAnswer={questions[currentQuestion].answers.find(answer => answer.isCorrect === true)?.answerText || ""} />
-        <Button variant="neo" size="lg" onClick={handleNext}>{!started ? 'Start' : (currentQuestion === questions.length - 1) ? 'Submit' : 'Next'}</Button>
+        {
+          (currentQuestion === questions.length - 1) ?
+            <Button variant="neo" size="lg" onClick={handleSubmit}>
+              submit
+            </Button> :
+
+            <Button variant="neo" size="lg" onClick={handleNext}>{!started ? 'Start' : 'Next'}</Button>
+
+        }
       </footer>
     </div>
   )
