@@ -4,6 +4,8 @@ import { quizzes } from '@/db/schema';
 import { auth } from '@/auth';
 import QuizzesTable, { Quizz } from './quizzesTable';
 import getUserMatrics from '@/actions/getUserMatrics';
+import MetricCard from './metricCard';
+import { use } from 'react';
 
 
 
@@ -23,7 +25,20 @@ const page = async () => {
   console.log(userData);
 
   return (
+    <div className="mt-4">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      {userData && userData.length > 0 ? 
+      <>{
+        userData.map((metric) => <MetricCard key={metric.label} label={metric.label} value={metric.value} />)
+      }
+      
+      </> : null
+
+      }
+      </div>
+
     <QuizzesTable quizzes={userQuizzes} />
+    </div>
   );
 }
 
