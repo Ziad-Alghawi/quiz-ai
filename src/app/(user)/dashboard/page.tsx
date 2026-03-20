@@ -7,6 +7,9 @@ import getUserMatrics from '@/actions/getUserMatrics';
 import MetricCard from './metricCard';
 import getHeatMapData from '@/actions/getHeatMapData';
 import SubmissionHeatMap from './heatMap';
+import SubscribeBtn from '../billing/SubscribeBtn';
+import { PRICE_ID } from '@/lib/utils';
+
 
 
 
@@ -43,6 +46,8 @@ const page = async () => {
         }
       </div>
 
+
+    <SubscribeBtn userId={userId} price={PRICE_ID} />
     <QuizzesTable quizzes={userQuizzes} />
     </div>
   );
