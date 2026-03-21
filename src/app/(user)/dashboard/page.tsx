@@ -47,7 +47,6 @@ const page = async () => {
       </div>
 
 
-    <SubscribeBtn userId={userId} price={PRICE_ID} />
     <QuizzesTable quizzes={userQuizzes} />
     </div>
   );
