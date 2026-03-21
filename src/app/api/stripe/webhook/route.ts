@@ -5,7 +5,7 @@ import {
   deleteSubscription
 } from "@/app/actions/userSubscriptions";
 
-const relevenrEvents = new Set([
+const relevantEvents = new Set([
   "checkout.session.completed",
   "customer.subscription.created",
   "customer.subscription.updated",
@@ -16,13 +16,17 @@ export async function POST(
   req: Request) {
     const body = await req.text();
     const sig = req.headers.get("stripe-signature") as string;
-    const webHookSecret = process.env.NODE_ENV === "production" ? process.env.STRIPE_WEBHOOK_SECRET : process.env.STRIPE_WEBHOOK_LOCAL_SERCRET;
+    const webHookSecret = process.env.NODE_ENV === "production"
+      ? process.env.STRIPE_WEBHOOK_SECRET
+      : process.env.STRIPE_WEBHOOK_LOCAL_SECRET || process.env.STRIPE_WEBHOOK_LOCAL_SERCRET;
 
     if(!webHookSecret) {
       throw new Error("STRIPE_WEBHOOK_SECRET is not defined");
     }
 
-    if (!sig) return;
+    if (!sig) {
+      return new Response(JSON.stringify({ error: "Missing stripe signature" }), { status: 400 });
+    }
 
     const event = stripe.webhooks.constructEvent(
       body,
@@ -32,7 +36,7 @@ export async function POST(
 
     const data = event.data.object as Stripe.Subscription;
 
-    if (relevenrEvents.has(event.type)) {
+    if (relevantEvents.has(event.type)) {
       switch (event.type) {
         case "customer.subscription.created":
           await createSubscription({ stripeCustomerId: data.customer as string });
@@ -49,7 +53,7 @@ export async function POST(
 
     return new Response(
       JSON.stringify({
-        recieved: true,
+        received: true,
       }), {
         status: 200,
       });

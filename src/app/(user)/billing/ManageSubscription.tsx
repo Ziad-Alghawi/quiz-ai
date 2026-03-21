@@ -20,12 +20,12 @@ const ManageSubscription = () => {
         },
       }).then((res) => res.json());
 
-      router.push(url.url);
+      router.push(url);
      
     } catch (error) {
-      setLoading(false);
-
       console.log('Subscribe Button Error:', error);
+    } finally {
+      setLoading(false);
     }
   }
 

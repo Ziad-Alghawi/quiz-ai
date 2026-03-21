@@ -22,7 +22,7 @@ This project grew in layers:
 3. Introduce authentication with NextAuth to give each user a private workspace.
 4. Add analytics so users can see quiz volume, question volume, submission count, average score, and activity over time.
 5. Add Stripe billing to turn the quiz generator into a gated feature that can be deployed as a real product.
-6. Prepare the app for deployment on Vercel with environment-based configuration.
+6. Deploy and run the project in production using Vercel.
 
 The result is not just an AI demo. It is a full-stack SaaS-style project that combines product thinking, backend persistence, and external service integration.
 
@@ -126,7 +126,7 @@ npm run dev
 
 Open http://localhost:3000 in the browser.
 
-### 4. Build before deploying
+### 4. Build check
 
 ```bash
 npm run build
@@ -136,7 +136,7 @@ npm run build
 
 For local development, use your local Stripe webhook secret.
 
-For production, set `STRIPE_WEBHOOK_SECRET` in Vercel.
+For production, set `STRIPE_WEBHOOK_SECRET` in your hosting environment.
 
 The code currently accepts the older misspelled local variable name `STRIPE_WEBHOOK_LOCAL_SERCRET` as a fallback so existing local setups do not break immediately.
 
@@ -154,24 +154,6 @@ The main entities are:
 - `quizz_submissions`
 
 Together, these tables support authentication, generated quiz content, and user performance tracking.
-
-## Deployment
-
-This project is ready to be deployed on Vercel.
-
-Recommended production setup:
-
-1. Create the project in Vercel.
-2. Add all required environment variables.
-3. Configure your production database URL.
-4. Configure Google OAuth callback URLs.
-5. Configure Stripe webhook and billing URLs.
-6. Run a production deployment.
-
-You can deploy either:
-
-- Directly from your local machine with the Vercel CLI
-- From a connected GitHub repository for automatic redeploys
 
 ## Why this project matters
 

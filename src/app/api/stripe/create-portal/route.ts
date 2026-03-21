@@ -56,15 +56,15 @@ export async function POST(
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    const url = await stripe.billingPortal.sessions.create({
+    const portalSession = await stripe.billingPortal.sessions.create({
       customer: customer.id,
       return_url: `${baseUrl}/billing`
-    })
+    });
 
     return new Response(
-      JSON.stringify({url}), {
+      JSON.stringify({ url: portalSession.url }), {
         status: 200
       }
-    )
+    );
 
 }

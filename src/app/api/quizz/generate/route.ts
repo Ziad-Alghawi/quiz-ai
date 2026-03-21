@@ -4,14 +4,26 @@ import { ChatGoogle } from "@langchain/google/node";
 import { HumanMessage } from "@langchain/core/messages";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import saveQuizz from "./saveToDb";
+import { auth } from "@/auth";
 
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await request.formData();
   const document = body.get("pdf");
 
+  if (!(document instanceof Blob) || document.size === 0) {
+    return NextResponse.json({ error: "Please upload a valid PDF file" }, { status: 400 });
+  }
+
   try {
-    const pdfLoader = new PDFLoader(document as Blob, {
+    const pdfLoader = new PDFLoader(document, {
       parsedItemSeparator: "",
     });
     const docs = await pdfLoader.load();
@@ -30,19 +42,21 @@ export async function POST(request: NextRequest) {
       model: "gemini-2.5-flash",
     });
 
-const result = await model.invoke([
-  new HumanMessage(prompt + "\n" + texts.join("\n")),
-]);
+    const result = await model.invoke([
+      new HumanMessage(prompt + "\n" + texts.join("\n")),
+    ]);
 
-const cleaned = result.text
-  .replace(/```json/g, "")
-  .replace(/```/g, "")
-  .trim();
+    const cleaned = result.text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-const parsed = JSON.parse(cleaned);
-console.log(JSON.stringify(parsed, null, 2));
+    const parsed = JSON.parse(cleaned);
+    if (!parsed?.quizz) {
+      return NextResponse.json({ error: "Invalid quiz payload returned by model" }, { status: 502 });
+    }
 
-const {quizzId} = await saveQuizz(parsed.quizz);
+    const { quizzId } = await saveQuizz(parsed.quizz, userId);
 
     return NextResponse.json({ quizzId }, { status: 200 });
   } catch (e: any) {

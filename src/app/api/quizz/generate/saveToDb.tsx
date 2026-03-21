@@ -13,21 +13,21 @@ interface SaveQuizzData extends Quizz {
 }
 
 // Function to save the quizz data to the database
-export default async function saveQuizz(quizzData: SaveQuizzData) {
+export default async function saveQuizz(quizzData: SaveQuizzData, userId: string) {
   const { name, description, questions } = quizzData;
-  const newQuizz = await 
-  db.insert(quizzes).values({
-    name,
-    description,
-  }).returning({insertedId: quizzes.id});
-  const quizzId = newQuizz[0].insertedId;
+  const quizzId = await db.transaction(async (tx) => {
+    const newQuizz = await tx.insert(quizzes).values({
+      name,
+      description,
+      userId,
+    }).returning({ insertedId: quizzes.id });
 
-// Insert questions and answers in a transaction
-  await db.transaction(async (tx) => {
+    const insertedQuizzId = newQuizz[0].insertedId;
+
     for (const question of questions) {
       const [{ questionId }] = await tx.insert(dbQuestions).values({
         questionText: question.questionText,
-        quizzId,
+        quizzId: insertedQuizzId,
       }).returning({ questionId: dbQuestions.id });
 
       // Insert answers for the question
@@ -39,10 +39,12 @@ export default async function saveQuizz(quizzData: SaveQuizzData) {
             isCorrect: answer.isCorrect,
             questionId,
           }))
-        )
+        );
       }
     }
+
+    return insertedQuizzId;
   });
 
-  return {quizzId};
+  return { quizzId };
 }

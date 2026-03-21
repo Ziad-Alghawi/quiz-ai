@@ -31,7 +31,7 @@ export async function createSubscription({
 
   }
 
-  export async function getUserSupscription ({
+  export async function getUserSubscription ({
     userId}: {
      userId: string 
     }) {
