@@ -1,14 +1,14 @@
 import UploadDoc from "../UploadDoc";
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import { getUserSubscription } from "@/app/actions/userSubscriptions";
 import UpgradePlan from "../UpgradePlan";
+import { redirect } from "next/navigation";
 
 const page = async () => {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {
-    signIn();
-    return;
+    redirect("/api/auth/signin?callbackUrl=/quizz/new");
   }
   const subscribed: boolean | null | undefined = await getUserSubscription({ userId });
 
