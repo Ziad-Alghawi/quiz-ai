@@ -6,7 +6,6 @@ import {
 } from "@/app/actions/userSubscriptions";
 
 const relevantEvents = new Set([
-  "checkout.session.completed",
   "customer.subscription.created",
   "customer.subscription.updated",
   "customer.subscription.deleted",
@@ -35,10 +34,12 @@ export async function POST(
     );
 
     const data = event.data.object as Stripe.Subscription;
+    console.log(data);
 
     if (relevantEvents.has(event.type)) {
       switch (event.type) {
         case "customer.subscription.created":
+        case "customer.subscription.updated":
           await createSubscription({ stripeCustomerId: data.customer as string });
           break;
         case "customer.subscription.deleted": {

@@ -38,6 +38,6 @@ export async function createSubscription({
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId)
       });
-      return user?.subscribed;
+      return user?.subscribed ?? false;
 
   }
