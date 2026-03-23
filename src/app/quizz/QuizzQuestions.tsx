@@ -99,8 +99,8 @@ export default function QuizzQuestions(props: props) {
   }
 
   return (
-    <div className="flex flex-col flex-1">
-      <div className="position-sticky top-0 z-10 shadow-md py-4 w-full">
+    <div className="flex h-full flex-col overflow-hidden">
+      <div className="position-sticky top-0 z-10 w-full shrink-0 py-4 shadow-md">
         <header className="grid grid-cols-[auto,1fr,auto]
           grid-flow-col items-center justify-between py-2 gap-2">
 
@@ -118,12 +118,12 @@ export default function QuizzQuestions(props: props) {
 
         </header>
       </div>
-      <main className="flex justify-center flex-1">
+      <main className="flex flex-1 justify-center overflow-y-auto px-2">
         {!started ?
-          <h1 className="text-3xl font-bold">Welcome to the quizz page 👋</h1>
+          <h1 className="mt-10 text-center text-3xl font-bold">Welcome to the quizz page 👋</h1>
           :
-          <div>
-            <h2 className="text-3xl font-bold">
+          <div className="w-full max-w-3xl py-2">
+            <h2 className="text-3xl font-bold break-words">
               {questions[currentQuestion].questionText}
             </h2>
             <div className="grid grid-cols-1 gap-6 mt-6">
@@ -135,8 +135,8 @@ export default function QuizzQuestions(props: props) {
                     <Button key={answer.id} disabled={!!selectedAnswer}
                       variant={variant}
                       size="xl"
-                      onClick={() => handleAnswer(answer, questions[currentQuestion].id)} className="disabled:opacity-100">
-                      <p className="whitespace-normal">{answer.answerText}</p>
+                      onClick={() => handleAnswer(answer, questions[currentQuestion].id)} className="!h-auto min-h-16 px-5 py-4 text-left disabled:opacity-100">
+                      <p className="w-full whitespace-normal break-words leading-relaxed">{answer.answerText}</p>
                     </Button>
                   )
                 })
@@ -144,7 +144,7 @@ export default function QuizzQuestions(props: props) {
             </div>
           </div>}
       </main>
-      <footer className="footer pb-9 px-6 relative mb-0 ">
+      <footer className="footer relative mb-0 shrink-0 px-6 pb-4">
         <ResultCard isCorrect={isCorrect}
           correctAnswer={questions[currentQuestion].answers.find(answer => answer.isCorrect === true)?.answerText || ""} />
         {

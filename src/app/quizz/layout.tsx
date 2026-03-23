@@ -9,7 +9,7 @@ export default function Layout({
     <>
       {/*<Header />*/}
 
-      <div className="flex flex-col flex-1 max-w-96 w-full m-auto h-screen gap-6 ">
+      <div className="m-auto flex h-[calc(100dvh-80px)] min-h-0 w-full max-w-96 flex-col">
         {children}
       </div>
     </>
