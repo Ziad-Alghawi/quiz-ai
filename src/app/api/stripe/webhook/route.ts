@@ -6,6 +6,7 @@ import {
 } from "@/app/actions/userSubscriptions";
 
 const relevantEvents = new Set([
+  "checkout.session.completed",
   "customer.subscription.created",
   "customer.subscription.updated",
   "customer.subscription.deleted",
@@ -33,16 +34,26 @@ export async function POST(
       webHookSecret
     );
 
-    const data = event.data.object as Stripe.Subscription;
-    console.log(data);
+    console.log("stripe webhook event:", event.type);
 
     if (relevantEvents.has(event.type)) {
       switch (event.type) {
+        case "checkout.session.completed": {
+          const data = event.data.object as Stripe.Checkout.Session;
+
+          if (typeof data.customer === "string") {
+            await createSubscription({ stripeCustomerId: data.customer });
+          }
+          break;
+        }
         case "customer.subscription.created":
-        case "customer.subscription.updated":
+        case "customer.subscription.updated": {
+          const data = event.data.object as Stripe.Subscription;
           await createSubscription({ stripeCustomerId: data.customer as string });
           break;
+        }
         case "customer.subscription.deleted": {
+          const data = event.data.object as Stripe.Subscription;
           await deleteSubscription({ stripeCustomerId: data.customer as string });
           break;
         }

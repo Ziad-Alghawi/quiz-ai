@@ -16,7 +16,8 @@ const Page = async () => {
     where: eq(users.id, session.user.id)
   } )
 
-  const plan = user?.subscribed ? "premium" : "free";
+  const subscribed = user?.subscribed ?? false;
+  const plan = subscribed ? "premium" : "free";
 
     return (
       <div className="p-4 border rounded-md">

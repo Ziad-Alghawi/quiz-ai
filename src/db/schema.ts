@@ -21,7 +21,7 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   stripeCustomerId: text("stripeCustomerId"),
-  subscribed: boolean("subscribed"),
+  subscribed: boolean("subscribed").default(false),
 });
 
 export const userRelations = relations(users, ({ many }) => ({
