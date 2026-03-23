@@ -13,13 +13,13 @@ interface SaveQuizzData extends Quizz {
 }
 
 // Function to save the quizz data to the database
-export default async function saveQuizz(quizzData: SaveQuizzData, userId: string) {
+export default async function saveQuizz(quizzData: SaveQuizzData, userId?: string) {
   const { name, description, questions } = quizzData;
   const quizzId = await db.transaction(async (tx) => {
     const newQuizz = await tx.insert(quizzes).values({
       name,
       description,
-      userId,
+      userId: userId ?? null,
     }).returning({ insertedId: quizzes.id });
 
     const insertedQuizzId = newQuizz[0].insertedId;

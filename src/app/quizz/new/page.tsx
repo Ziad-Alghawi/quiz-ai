@@ -2,28 +2,36 @@ import UploadDoc from "../UploadDoc";
 import { auth } from "@/auth";
 import { getUserSubscription } from "@/app/actions/userSubscriptions";
 import UpgradePlan from "../UpgradePlan";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const page = async () => {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!userId) {
-    redirect("/api/auth/signin?callbackUrl=/quizz/new");
-  }
-  const subscribed: boolean | null | undefined = await getUserSubscription({ userId });
+  const subscribed = userId
+    ? await getUserSubscription({ userId })
+    : false;
 
   return (
     <div className="flex flex-col flex-1">
       <main className="pt-11 flex flex-col text-center items-center gap-4 flex-1 mt-24">
-        {subscribed ? (
-          <>
-            <h2 className="text-3xl font-bold">
-              What do you want to be quizzed about today?
-            </h2>
-            <UploadDoc />
-          </>
-        ) : (
-          <UpgradePlan />
+        <h2 className="text-3xl font-bold">
+          What do you want to be quizzed about today?
+        </h2>
+        <UploadDoc />
+
+        {!userId && (
+          <p className="text-sm text-muted-foreground">
+            Want to save your quizzes?{" "}
+            <Link href="/api/auth/signin?callbackUrl=/quizz/new" className="underline">
+              Sign in
+            </Link>
+          </p>
+        )}
+
+        {userId && !subscribed && (
+          <div className="w-full max-w-sm mt-4">
+            <UpgradePlan />
+          </div>
         )}
       </main>
     </div>

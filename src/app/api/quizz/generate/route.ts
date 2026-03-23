@@ -11,10 +11,6 @@ export async function POST(request: NextRequest) {
   const session = await auth();
   const userId = session?.user?.id;
 
-  if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   const body = await request.formData();
   const document = body.get("pdf");
 
